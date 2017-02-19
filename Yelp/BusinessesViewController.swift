@@ -7,34 +7,42 @@
 //
 
 import UIKit
+import CoreLocation
 
-class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate {
     
     @IBOutlet weak var tableView: UITableView!
     var businesses: [Business]!
     
+    var searchBar:UISearchBar!
+    
+    var isMoreDataLoading = false
+    
+    var locationManager: CLLocationManager!
+    var geocoder: CLGeocoder!
+    var locationFetchCounter: Int = 0
+    
+    var offset = 0
+    var location = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        geocoder = CLGeocoder()
+        
+        locationFetchCounter = 0
+        locationManager.startUpdatingLocation()
         
         tableView.delegate = self
         tableView.dataSource = self
         
-        Business.searchWithTerm(term: "Thai", completion: { (businesses: [Business]?, error: Error?) -> Void in
-            
-            self.businesses = businesses
-            if let businesses = businesses {
-                for business in businesses {
-                    print(business.name!)
-                    print(business.address!)
-                }
-            }
-            self.tableView.reloadData()
-            
-            }
-        )
-        
+                
         tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 125
+        tableView.estimatedRowHeight = 95
         
         /* Example of Yelp search with more search options specified
          Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
@@ -46,6 +54,16 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
          }
          }
          */
+        
+        
+        navigationController?.navigationBar.tintColor = .red
+        navigationController?.navigationBar.backgroundColor = .red
+        navigationController?.navigationBar.barTintColor = .red
+        
+        searchBar = UISearchBar()
+        searchBar.sizeToFit()
+        
+        navigationItem.titleView = searchBar
         
     }
     
@@ -71,6 +89,55 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.business = businesses[indexPath.row]
         
         return cell
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if !isMoreDataLoading {
+            let scrollViewContentHeight = tableView.contentSize.height
+            let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
+            
+            if scrollView.contentOffset.y > scrollOffsetThreshold && tableView.isDragging {
+                isMoreDataLoading = true
+                
+                
+            }
+        }
+    }
+    
+    
+    //MARK: - CLLocationManager
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if locationFetchCounter > 0 {
+            return
+        }
+        
+        locationFetchCounter += 1
+
+        let long = String(format: "%.4f", (locations.last?.coordinate.longitude)!)
+        let lat = String(format: "%.4f", (locations.last?.coordinate.latitude)!)
+        
+        self.location = "\(lat), \(long)"
+        print(self.location)
+        
+        self.locationManager.stopUpdatingLocation()
+        
+        Business.searchWithTerm(term: "Thai", offset: offset, location: location, completion: { (businesses: [Business]?, error: Error?) -> Void in
+            
+            self.businesses = businesses
+            if let businesses = businesses {
+                for business in businesses {
+                    print(business.name!)
+                    print(business.address!)
+                }
+            }
+            self.tableView.reloadData()
+            
+        })
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error)
     }
     
     /*

@@ -21,10 +21,22 @@ class BusinessTableViewCell: UITableViewCell {
     
     var business: Business! {
         didSet {
-            businessView.setImageWith(business.imageURL!)
+            if let imageURL = business.imageURL {
+                businessView.setImageWith(imageURL)
+            }
+            else {
+                businessView.image = #imageLiteral(resourceName: "iconmonstr-shop-1-240")
+            }
+            
+            if let ratingImageURL = business.ratingImageURL {
+                ratingsView.setImageWith(ratingImageURL)
+            }
+            else {
+                ratingsView.image = #imageLiteral(resourceName: "iconmonstr-shop-1-240")
+            }
+            
             businessNameLabel.text = business.name
             distanceLabel.text = business.distance
-            ratingsView.setImageWith(business.ratingImageURL!)
             reviewsLabel.text = "\(business.reviewCount!) Reviews"
             addressLabel.text = business.address
             tagsLabel.text = business.categories
