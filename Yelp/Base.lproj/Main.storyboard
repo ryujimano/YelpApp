@@ -12,7 +12,7 @@
         <!--Businesses View Controller-->
         <scene sceneID="5L9-Uz-lNK">
             <objects>
-                <viewController id="2xI-yr-O5N" customClass="BusinessesViewController" customModule="Yelp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="listView" id="2xI-yr-O5N" customClass="BusinessesViewController" customModule="Yelp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="hR0-74-jRp"/>
                         <viewControllerLayoutGuide type="bottom" id="VBY-gq-v8E"/>
@@ -24,6 +24,7 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="95" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Xzp-1J-cSD">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <inset key="separatorInset" minX="5" minY="0.0" maxX="5" maxY="0.0"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="businessCell" rowHeight="95" id="D8j-ez-UVO" customClass="BusinessTableViewCell" customModule="Yelp" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="95"/>
@@ -138,7 +139,40 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fgb-4b-F1b" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2727.1999999999998" y="357.57121439280365"/>
+            <point key="canvasLocation" x="3140" y="13"/>
+        </scene>
+        <!--Search View Controller-->
+        <scene sceneID="VHd-jL-ehc">
+            <objects>
+                <viewController id="1O8-cV-NYb" customClass="SearchViewController" customModule="Yelp" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="p3D-OD-WYw"/>
+                        <viewControllerLayoutGuide type="bottom" id="k1q-XF-k7F"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Jop-es-2Wb">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JeQ-p5-j6x">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </containerView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="JeQ-p5-j6x" firstAttribute="top" secondItem="p3D-OD-WYw" secondAttribute="bottom" constant="-64" id="CJ5-ns-oQN"/>
+                            <constraint firstItem="JeQ-p5-j6x" firstAttribute="leading" secondItem="Jop-es-2Wb" secondAttribute="leading" id="QJG-wC-JjW"/>
+                            <constraint firstAttribute="trailing" secondItem="JeQ-p5-j6x" secondAttribute="trailing" id="Xe3-J3-dWT"/>
+                            <constraint firstItem="k1q-XF-k7F" firstAttribute="top" secondItem="JeQ-p5-j6x" secondAttribute="bottom" id="dAP-rd-I83"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="mcT-1E-EI5"/>
+                    <connections>
+                        <outlet property="containerView" destination="JeQ-p5-j6x" id="cBo-TH-ULx"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7eQ-tu-InS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2453.5999999999999" y="357.57121439280365"/>
         </scene>
         <!--Business View Controller-->
         <scene sceneID="BcL-uF-Ozf">
@@ -156,7 +190,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kjj-nX-xsP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3591.1999999999998" y="357.57121439280365"/>
+            <point key="canvasLocation" x="4428" y="358"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="RCx-R3-Kpa">
@@ -169,12 +203,40 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="2xI-yr-O5N" kind="relationship" relationship="rootViewController" id="Aj6-At-5wD"/>
+                        <segue destination="1O8-cV-NYb" kind="relationship" relationship="rootViewController" id="9lZ-Ba-cu7"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vw3-mo-0hZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1788" y="357.57121439280365"/>
+            <point key="canvasLocation" x="1767" y="358"/>
+        </scene>
+        <!--Map View Controller-->
+        <scene sceneID="yzj-4M-gh8">
+            <objects>
+                <viewController storyboardIdentifier="mapView" id="YHY-We-Ieb" customClass="MapViewController" customModule="Yelp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="If9-HA-wkp">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="6Tr-FL-8w4">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </mapView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="6Tr-FL-8w4" secondAttribute="trailing" id="IpC-uq-Yp6"/>
+                            <constraint firstItem="6Tr-FL-8w4" firstAttribute="leading" secondItem="If9-HA-wkp" secondAttribute="leading" id="PzU-ZV-swv"/>
+                            <constraint firstAttribute="bottom" secondItem="6Tr-FL-8w4" secondAttribute="bottom" id="T7p-xj-eyA"/>
+                            <constraint firstItem="6Tr-FL-8w4" firstAttribute="top" secondItem="If9-HA-wkp" secondAttribute="top" id="pyG-1q-5P2"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="mapView" destination="6Tr-FL-8w4" id="Inj-h6-UEE"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fZS-ml-XFh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3140" y="678.71064467766121"/>
         </scene>
     </scenes>
 </document>

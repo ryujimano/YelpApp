@@ -15,8 +15,6 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet weak var tableView: UITableView!
     var businesses: [Business] = []
     
-    var searchBar:UISearchBar!
-    
     var isMoreDataLoading = false
     var isEnd = false
     
@@ -59,17 +57,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
          }
          }
          */
-        
-        
-        navigationController?.navigationBar.tintColor = .red
-        navigationController?.navigationBar.backgroundColor = .red
-        navigationController?.navigationBar.barTintColor = .red
-        
-        searchBar = UISearchBar()
-        searchBar.sizeToFit()
-        
-        navigationItem.titleView = searchBar
-        
+                
     }
     
     override func didReceiveMemoryWarning() {
@@ -91,6 +79,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.business = businesses[indexPath.row]
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
