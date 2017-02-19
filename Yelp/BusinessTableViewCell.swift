@@ -32,7 +32,7 @@ class BusinessTableViewCell: UITableViewCell {
                 ratingsView.setImageWith(ratingImageURL)
             }
             else {
-                ratingsView.image = #imageLiteral(resourceName: "iconmonstr-shop-1-240")
+                ratingsView.backgroundColor = .white
             }
             
             businessNameLabel.text = business.name

@@ -8,15 +8,17 @@
 
 import UIKit
 import CoreLocation
+import MBProgressHUD
 
 class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CLLocationManagerDelegate {
     
     @IBOutlet weak var tableView: UITableView!
-    var businesses: [Business]!
+    var businesses: [Business] = []
     
     var searchBar:UISearchBar!
     
     var isMoreDataLoading = false
+    var isEnd = false
     
     var locationManager: CLLocationManager!
     var geocoder: CLGeocoder!
@@ -28,6 +30,8 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        MBProgressHUD.showAdded(to: view, animated: true)
+        
         locationManager = CLLocationManager()
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
@@ -37,6 +41,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         locationFetchCounter = 0
         locationManager.startUpdatingLocation()
         
+        tableView.alpha = 0
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -77,10 +82,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     // MARK: - TableView
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if businesses != nil {
-            return businesses.count
-        }
-        return 0
+        return businesses.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -96,10 +98,13 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             let scrollViewContentHeight = tableView.contentSize.height
             let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.size.height
             
-            if scrollView.contentOffset.y > scrollOffsetThreshold && tableView.isDragging {
+            if scrollView.contentOffset.y > scrollOffsetThreshold - 100 && tableView.isDragging && !isEnd {
                 isMoreDataLoading = true
                 
+                MBProgressHUD.showAdded(to: view, animated: true)
                 
+                offset += businesses.count
+                getBusinesses(at: offset)
             }
         }
     }
@@ -122,22 +127,34 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         
         self.locationManager.stopUpdatingLocation()
         
-        Business.searchWithTerm(term: "Thai", offset: offset, location: location, completion: { (businesses: [Business]?, error: Error?) -> Void in
-            
-            self.businesses = businesses
-            if let businesses = businesses {
-                for business in businesses {
-                    print(business.name!)
-                    print(business.address!)
-                }
-            }
-            self.tableView.reloadData()
-            
-        })
+        getBusinesses(at: 0)
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print(error)
+    }
+    
+    
+    func getBusinesses(at offset: Int) {
+        Business.searchWithTerm(term: "Thai", offset: offset, location: location, completion: { (businesses: [Business]?, error: Error?) -> Void in
+            
+            if let businesses = businesses, businesses.count != 0 {
+                self.businesses += businesses
+//                for business in businesses {
+//                    print(business.name!)
+//                    print(business.address!)
+//                }
+            }
+            else {
+                self.isEnd = true
+            }
+            self.tableView.reloadData()
+            MBProgressHUD.hide(for: self.view, animated: true)
+            if self.tableView.alpha == 0 {
+                self.tableView.alpha = 1
+            }
+            self.isMoreDataLoading = false
+        })
     }
     
     /*
