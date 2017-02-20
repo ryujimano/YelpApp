@@ -118,12 +118,18 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         locationFetchCounter += 1
+        
+        let lng = locations.last?.coordinate.longitude
+        let lt = locations.last?.coordinate.latitude
+        
+        searchView.long = lng
+        searchView.lat = lt
 
-        let long = String(format: "%.4f", (locations.last?.coordinate.longitude)!)
-        let lat = String(format: "%.4f", (locations.last?.coordinate.latitude)!)
+        let long = String(format: "%.4f", lng!)
+        let lat = String(format: "%.4f", lt!)
         
         self.location = "\(lat), \(long)"
-        print(self.location)
+        searchView.coordinates = location
         
         self.locationManager.stopUpdatingLocation()
         
@@ -144,6 +150,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
 //                    print(business.name!)
 //                    print(business.address!)
 //                }
+                self.searchView.businesses = self.businesses
             }
             else {
                 self.isEnd = true

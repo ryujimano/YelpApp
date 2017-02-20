@@ -20,6 +20,12 @@ class SearchViewController: UIViewController {
     
     var isList = true
     
+    var lat:Double?
+    var long:Double?
+    var coordinates:String?
+    
+    var businesses: [Business] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -29,6 +35,7 @@ class SearchViewController: UIViewController {
         listViewController.height = Int((self.navigationController?.navigationBar.frame.height)!) + Int(UIApplication.shared.statusBarFrame.height)
         listViewController.searchView = self
         mapViewController = storyboard?.instantiateViewController(withIdentifier: "mapView") as! MapViewController
+        mapViewController.searchView = self
         
         currentViewController = listViewController
         currentViewController?.view.translatesAutoresizingMaskIntoConstraints = true

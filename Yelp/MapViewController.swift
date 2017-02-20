@@ -8,14 +8,43 @@
 
 import UIKit
 import MapKit
+import CoreLocation
+import AFNetworking
 
-class MapViewController: UIViewController {
+class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
+    
+    var searchView:SearchViewController!
+    var locationManager: CLLocationManager!
+    
+    var lat:Double?
+    var long:Double?
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        mapView.delegate = self
+        
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.distanceFilter = 200
+        
+        var centerLoc:CLLocation!
 
-        // Do any additional setup after loading the view.
+        if let lat = searchView.lat, let long = searchView.long {
+            centerLoc = CLLocation(latitude: lat, longitude: long)
+            goToLocation(location: centerLoc)
+            self.lat = lat
+            self.long = long
+        }
+        else {
+            locationManager.requestWhenInUseAuthorization()
+        }
+        
+        for business in searchView.businesses {
+            addAnotation(forBusiness: business)
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -23,6 +52,39 @@ class MapViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    func addAnotation(forBusiness business: Business) {
+        let annotation = MKPointAnnotation()
+        guard let lat = business.latitude, let long = business.longitude else {
+            return
+        }
+        annotation.coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+        annotation.title = business.name
+        mapView.addAnnotation(annotation)
+    }
+    
+    func goToLocation(location: CLLocation) {
+        let span = MKCoordinateSpanMake(0.1, 0.1)
+        let region = MKCoordinateRegionMake(location.coordinate, span)
+        mapView.setRegion(region, animated: false)
+    }
+    
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedWhenInUse {
+            locationManager.startUpdatingLocation()
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.first {
+            let span = MKCoordinateSpanMake(0.1, 0.1)
+            let region = MKCoordinateRegionMake(location.coordinate, span)
+            mapView.setRegion(region, animated: false)
+            
+            self.lat = location.coordinate.latitude
+            self.long = location.coordinate.longitude
+        }
+    }
 
     /*
     // MARK: - Navigation
