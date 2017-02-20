@@ -11,6 +11,8 @@ import UIKit
 class SearchViewController: UIViewController {
     @IBOutlet weak var containerView: UIView!
     weak var currentViewController:UIViewController?
+    var listViewController:BusinessesViewController!
+    var mapViewController:MapViewController!
     
     var searchBar:UISearchBar!
     
@@ -21,11 +23,17 @@ class SearchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        currentViewController = storyboard?.instantiateViewController(withIdentifier: "listView")
+        self.view.backgroundColor = .black
+        
+        listViewController = storyboard?.instantiateViewController(withIdentifier: "listView") as! BusinessesViewController
+        listViewController.height = Int((self.navigationController?.navigationBar.frame.height)!) + Int(UIApplication.shared.statusBarFrame.height)
+        listViewController.searchView = self
+        mapViewController = storyboard?.instantiateViewController(withIdentifier: "mapView") as! MapViewController
+        
+        currentViewController = listViewController
         currentViewController?.view.translatesAutoresizingMaskIntoConstraints = true
         addChildViewController(currentViewController!)
         containerView.addSubview((currentViewController?.view)!)
-
         
         navigationController?.navigationBar.tintColor = .red
         navigationController?.navigationBar.backgroundColor = .red
@@ -52,7 +60,7 @@ class SearchViewController: UIViewController {
     
     func rightBarButtonPressed() {
         if isList {
-            let newViewController = storyboard?.instantiateViewController(withIdentifier: "mapView")
+            let newViewController = mapViewController
             newViewController?.view.translatesAutoresizingMaskIntoConstraints = true
             transitionViewControllers(from: currentViewController!, to: newViewController!)
             currentViewController = newViewController
@@ -60,7 +68,7 @@ class SearchViewController: UIViewController {
             isList = false
         }
         else {
-            let newViewController = storyboard?.instantiateViewController(withIdentifier: "listView")
+            let newViewController = listViewController
             newViewController?.view.translatesAutoresizingMaskIntoConstraints = true
             transitionViewControllers(from: currentViewController!, to: newViewController!)
             currentViewController = newViewController
@@ -73,16 +81,19 @@ class SearchViewController: UIViewController {
         oldViewController.willMove(toParentViewController: nil)
         addChildViewController(newViewController)
         containerView.addSubview(newViewController.view)
-        newViewController.view.alpha = 0
-        newViewController.view.layoutIfNeeded()
-        
-        UIView.animate(withDuration: 0.5, animations: { 
-            newViewController.view.alpha = 1
-            oldViewController.view.alpha = 0
-        }) { (completed) in
-            oldViewController.view.removeFromSuperview()
-            oldViewController.removeFromParentViewController()
-            newViewController.didMove(toParentViewController: self)
+        if isList {
+            UIView.transition(from: oldViewController.view, to: newViewController.view, duration: 0.8, options: .transitionFlipFromRight) { (completed) in
+                oldViewController.view.removeFromSuperview()
+                oldViewController.removeFromParentViewController()
+                newViewController.didMove(toParentViewController: self)
+            }
+        }
+        else {
+            UIView.transition(from: oldViewController.view, to: newViewController.view, duration: 0.8, options: .transitionFlipFromLeft) { (completed) in
+                oldViewController.view.removeFromSuperview()
+                oldViewController.removeFromParentViewController()
+                newViewController.didMove(toParentViewController: self)
+            }
         }
     }
     

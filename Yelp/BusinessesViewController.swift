@@ -25,10 +25,13 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     var offset = 0
     var location = ""
     
+    var height: Int!
+    var searchView:SearchViewController!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        MBProgressHUD.showAdded(to: view, animated: true)
+        MBProgressHUD.showAdded(to: searchView.view, animated: true)
         
         locationManager = CLLocationManager()
         locationManager.delegate = self
@@ -43,9 +46,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         tableView.dataSource = self
         
-                
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 95
+        
+        self.automaticallyAdjustsScrollViewInsets = false
         
         /* Example of Yelp search with more search options specified
          Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
@@ -58,6 +62,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
          }
          */
                 
+    }
+    
+    override func viewWillLayoutSubviews() {
+        tableView.contentInset = UIEdgeInsetsMake(0, 0, CGFloat(height), 0)
     }
     
     override func didReceiveMemoryWarning() {
@@ -93,7 +101,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             if scrollView.contentOffset.y > scrollOffsetThreshold - 100 && tableView.isDragging && !isEnd {
                 isMoreDataLoading = true
                 
-                MBProgressHUD.showAdded(to: view, animated: true)
+                MBProgressHUD.showAdded(to: searchView.view, animated: true)
                 
                 offset += businesses.count
                 getBusinesses(at: offset)
@@ -141,7 +149,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
                 self.isEnd = true
             }
             self.tableView.reloadData()
-            MBProgressHUD.hide(for: self.view, animated: true)
+            MBProgressHUD.hide(for: self.searchView.view, animated: true)
             if self.tableView.alpha == 0 {
                 self.tableView.alpha = 1
             }

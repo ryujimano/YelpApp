@@ -21,7 +21,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="95" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Xzp-1J-cSD">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="95" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Xzp-1J-cSD">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <inset key="separatorInset" minX="5" minY="0.0" maxX="5" maxY="0.0"/>
@@ -154,12 +154,12 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JeQ-p5-j6x">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                             </containerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="JeQ-p5-j6x" firstAttribute="top" secondItem="p3D-OD-WYw" secondAttribute="bottom" constant="-64" id="CJ5-ns-oQN"/>
+                            <constraint firstItem="JeQ-p5-j6x" firstAttribute="top" secondItem="p3D-OD-WYw" secondAttribute="bottom" id="CJ5-ns-oQN"/>
                             <constraint firstItem="JeQ-p5-j6x" firstAttribute="leading" secondItem="Jop-es-2Wb" secondAttribute="leading" id="QJG-wC-JjW"/>
                             <constraint firstAttribute="trailing" secondItem="JeQ-p5-j6x" secondAttribute="trailing" id="Xe3-J3-dWT"/>
                             <constraint firstItem="k1q-XF-k7F" firstAttribute="top" secondItem="JeQ-p5-j6x" secondAttribute="bottom" id="dAP-rd-I83"/>
