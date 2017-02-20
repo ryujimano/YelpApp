@@ -53,13 +53,34 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     
     func addAnotation(forBusiness business: Business) {
-        let annotation = MKPointAnnotation()
+        let annotation = CustomAnnotation(business: business)
         guard let lat = business.latitude, let long = business.longitude else {
             return
         }
         annotation.coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
-        annotation.title = business.name
+        
         mapView.addAnnotation(annotation)
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        let identifier = "customAnnotation"
+        
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+        
+        let ann = annotation as! CustomAnnotation
+        
+        if annotationView == nil {
+            annotationView = MKAnnotationView(annotation: ann, reuseIdentifier: identifier)
+        }
+        else {
+            annotationView?.annotation = ann
+        }
+        
+        annotationView!.image = ann.businessView.image
+        ann.businessView.frame.size.height = 50
+        ann.businessView.frame.size.width = 50
+        annotationView!.frame = ann.businessView.frame
+        return annotationView
     }
     
     func goToLocation(location: CLLocation) {
