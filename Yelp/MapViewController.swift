@@ -27,6 +27,15 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     var lat:Double?
     var long:Double?
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
+        addAnnotations()
+        
+        annotationView.alpha = 0
+        view.addSubview(annotationView)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -87,17 +96,18 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             locationManager.requestWhenInUseAuthorization()
         }
         
-        for business in searchView.businesses {
-            addAnotation(forBusiness: business)
-        }
         
-        annotationView.alpha = 0
-        view.addSubview(annotationView)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func addAnnotations() {
+        for business in searchView.businesses {
+            addAnotation(forBusiness: business)
+        }
     }
     
     func addAnotation(forBusiness business: Business) {
@@ -133,7 +143,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         let ann = view.annotation as! CustomAnnotation
-        
         annotationView.nameLabel.text = ann.business.name
         annotationView.distanceLabel.text = ann.business.distance
         annotationView.reviewsView.setImageWith(ann.business.ratingImageURL!)

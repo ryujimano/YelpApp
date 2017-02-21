@@ -23,6 +23,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     var locationFetchCounter: Int = 0
     
     var offset = 0
+    var term:String = "All"
     var location = ""
     
     var height: Int!
@@ -107,7 +108,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
                 MBProgressHUD.showAdded(to: searchView.view, animated: true)
                 
                 offset += businesses.count
-                getBusinesses(at: offset)
+                getBusinesses(at: offset, forTerm: term)
             }
         }
         searchView.searchBar.resignFirstResponder()
@@ -137,7 +138,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         
         self.locationManager.stopUpdatingLocation()
         
-        getBusinesses(at: 0)
+        getBusinesses(at: 0, forTerm: term)
         searchView.navigationItem.rightBarButtonItem?.isEnabled = true
     }
     
@@ -146,11 +147,16 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     
-    func getBusinesses(at offset: Int) {
-        Business.searchWithTerm(term: "All", offset: offset, location: location, completion: { (businesses: [Business]?, error: Error?) -> Void in
+    func getBusinesses(at offset: Int, forTerm term: String) {
+        Business.searchWithTerm(term: term, offset: offset, location: location, completion: { (businesses: [Business]?, error: Error?) -> Void in
             
             if let businesses = businesses, businesses.count != 0 {
-                self.businesses += businesses
+                if offset == 0 {
+                    self.businesses = businesses
+                }
+                else {
+                    self.businesses += businesses
+                }
 //                for business in businesses {
 //                    print(business.name!)
 //                    print(business.address!)
@@ -161,6 +167,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
                 self.isEnd = true
             }
             self.tableView.reloadData()
+            self.searchView.reloadMapView()
             MBProgressHUD.hide(for: self.searchView.view, animated: true)
             if self.tableView.alpha == 0 {
                 self.tableView.alpha = 1

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MBProgressHUD
 
 class SearchViewController: UIViewController, UISearchBarDelegate {
     @IBOutlet weak var containerView: UIView!
@@ -44,7 +45,7 @@ class SearchViewController: UIViewController, UISearchBarDelegate {
         addChildViewController(currentViewController!)
         containerView.addSubview((currentViewController?.view)!)
         
-        navigationController?.navigationBar.tintColor = .red
+        navigationController?.navigationBar.tintColor = .white
         navigationController?.navigationBar.backgroundColor = .red
         navigationController?.navigationBar.barTintColor = .red
         
@@ -111,12 +112,29 @@ class SearchViewController: UIViewController, UISearchBarDelegate {
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        navigationItem.rightBarButtonItem = searchButton
+        self.navigationItem.rightBarButtonItem = searchButton
     }
     
-    func searchButtonClicked(_ searchBar: UISearchBar) {
+    func searchButtonClicked() {
+        MBProgressHUD.showAdded(to: view, animated: true)
         listViewController.offset = 0
-        listViewController.getBusinesses(at: listViewController.offset)
+        listViewController.term = searchBar.text!
+        listViewController.getBusinesses(at: listViewController.offset, forTerm: listViewController.term)
+        
+    }
+    
+    func reloadMapView() {
+        guard let mapView = mapViewController.mapView else {
+            return
+        }
+        mapView.removeAnnotations(mapViewController.mapView.annotations)
+        mapViewController.addAnnotations()
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchButtonClicked()
+        searchBar.resignFirstResponder()
+        navigationItem.rightBarButtonItem = rightButton
     }
 
     /*
