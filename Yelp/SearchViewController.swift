@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SearchViewController: UIViewController {
+class SearchViewController: UIViewController, UISearchBarDelegate {
     @IBOutlet weak var containerView: UIView!
     weak var currentViewController:UIViewController?
     var listViewController:BusinessesViewController!
@@ -17,6 +17,7 @@ class SearchViewController: UIViewController {
     var searchBar:UISearchBar!
     
     var rightButton:UIBarButtonItem!
+    var searchButton:UIBarButtonItem!
     
     var isList = true
     
@@ -30,6 +31,7 @@ class SearchViewController: UIViewController {
         super.viewDidLoad()
         
         self.view.backgroundColor = .black
+        
         
         listViewController = storyboard?.instantiateViewController(withIdentifier: "listView") as! BusinessesViewController
         listViewController.height = Int((self.navigationController?.navigationBar.frame.height)!) + Int(UIApplication.shared.statusBarFrame.height)
@@ -47,6 +49,7 @@ class SearchViewController: UIViewController {
         navigationController?.navigationBar.barTintColor = .red
         
         searchBar = UISearchBar()
+        searchBar.delegate = self
         
         navigationItem.titleView = searchBar
         
@@ -55,8 +58,11 @@ class SearchViewController: UIViewController {
         isList = true
         
         navigationItem.rightBarButtonItem = rightButton
+        navigationItem.rightBarButtonItem?.isEnabled = false
         
         searchBar.sizeToFit()
+        
+        searchButton = UIBarButtonItem(title: "Search", style: .plain, target: self, action: #selector(self.searchButtonClicked))
 
     }
 
@@ -104,6 +110,14 @@ class SearchViewController: UIViewController {
         }
     }
     
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        navigationItem.rightBarButtonItem = searchButton
+    }
+    
+    func searchButtonClicked(_ searchBar: UISearchBar) {
+        listViewController.offset = 0
+        listViewController.getBusinesses(at: listViewController.offset)
+    }
 
     /*
     // MARK: - Navigation

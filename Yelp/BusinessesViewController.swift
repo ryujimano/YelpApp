@@ -90,6 +90,9 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let businessView = storyboard?.instantiateViewController(withIdentifier: "businessView") as! BusinessViewController
+        businessView.business = businesses[indexPath.row]
+        searchView.navigationController?.show(businessView, sender: tableView.cellForRow(at: indexPath))
         tableView.deselectRow(at: indexPath, animated: false)
     }
     
@@ -107,8 +110,9 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
                 getBusinesses(at: offset)
             }
         }
+        searchView.searchBar.resignFirstResponder()
+        searchView.navigationItem.rightBarButtonItem = searchView.rightButton
     }
-    
     
     //MARK: - CLLocationManager
     
@@ -134,6 +138,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         self.locationManager.stopUpdatingLocation()
         
         getBusinesses(at: 0)
+        searchView.navigationItem.rightBarButtonItem?.isEnabled = true
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
@@ -142,7 +147,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     
     func getBusinesses(at offset: Int) {
-        Business.searchWithTerm(term: "Thai", offset: offset, location: location, completion: { (businesses: [Business]?, error: Error?) -> Void in
+        Business.searchWithTerm(term: "All", offset: offset, location: location, completion: { (businesses: [Business]?, error: Error?) -> Void in
             
             if let businesses = businesses, businesses.count != 0 {
                 self.businesses += businesses
@@ -163,6 +168,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             self.isMoreDataLoading = false
         })
     }
+    
+    
+    
+    
     
     /*
      // MARK: - Navigation

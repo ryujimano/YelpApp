@@ -11,8 +11,16 @@ import MapKit
 import CoreLocation
 import AFNetworking
 
-class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
+class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UIGestureRecognizerDelegate {
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet var annotationView: AnnotationView!
+    var gestureRecognizer: UIGestureRecognizer!
+    var panGestureRecognizer: UIPanGestureRecognizer!
+    var pinchGestureRecognizer: UIPinchGestureRecognizer!
+    var rotationRecognizer: UIRotationGestureRecognizer!
+    var longPressRecognizer: UILongPressGestureRecognizer!
+    
+    var viewTapGestureRecognizer: UITapGestureRecognizer!
     
     var searchView:SearchViewController!
     var locationManager: CLLocationManager!
@@ -24,6 +32,43 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         super.viewDidLoad()
         
         mapView.delegate = self
+        mapView.isUserInteractionEnabled = true
+        
+        gestureRecognizer = UITapGestureRecognizer()
+        gestureRecognizer.delegate = self
+        
+        panGestureRecognizer = UIPanGestureRecognizer()
+        panGestureRecognizer.delegate = self
+        
+        pinchGestureRecognizer = UIPinchGestureRecognizer()
+        pinchGestureRecognizer.delegate = self
+        
+        rotationRecognizer = UIRotationGestureRecognizer()
+        rotationRecognizer.delegate = self
+        
+        longPressRecognizer = UILongPressGestureRecognizer()
+        longPressRecognizer.delegate = self
+        
+        viewTapGestureRecognizer = UITapGestureRecognizer()
+        viewTapGestureRecognizer.delegate = self
+        
+        gestureRecognizer.addTarget(self, action: #selector(self.mapviewTapped))
+        mapView.addGestureRecognizer(gestureRecognizer)
+        
+        panGestureRecognizer.addTarget(self, action: #selector(self.mapviewDragged))
+        mapView.addGestureRecognizer(panGestureRecognizer)
+        
+        pinchGestureRecognizer.addTarget(self, action: #selector(self.mapviewDragged))
+        mapView.addGestureRecognizer(pinchGestureRecognizer)
+        
+        rotationRecognizer.addTarget(self, action: #selector(self.mapviewDragged))
+        mapView.addGestureRecognizer(rotationRecognizer)
+        
+        longPressRecognizer.addTarget(self, action: #selector(self.mapviewDragged))
+        mapView.addGestureRecognizer(longPressRecognizer)
+        
+        viewTapGestureRecognizer.addTarget(self, action: #selector(self.viewTapped))
+        annotationView.addGestureRecognizer(viewTapGestureRecognizer)
         
         locationManager = CLLocationManager()
         locationManager.delegate = self
@@ -45,6 +90,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         for business in searchView.businesses {
             addAnotation(forBusiness: business)
         }
+        
+        annotationView.alpha = 0
+        view.addSubview(annotationView)
     }
 
     override func didReceiveMemoryWarning() {
@@ -83,6 +131,48 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         return annotationView
     }
     
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        let ann = view.annotation as! CustomAnnotation
+        
+        annotationView.nameLabel.text = ann.business.name
+        annotationView.distanceLabel.text = ann.business.distance
+        annotationView.reviewsView.setImageWith(ann.business.ratingImageURL!)
+        annotationView.reviewsLabel.text = "\(ann.business.reviewCount!) Reviews"
+        annotationView.addressLabel.text = ann.business.address
+        annotationView.categoriesLabel.text = ann.business.categories
+        annotationView.id = searchView.businesses.index(of: ann.business)!
+        
+        var x = view.frame.origin.x - 90
+        let y = view.frame.origin.y
+        if x < 0 {
+            x = 0
+        }
+        else if x + 240 > self.view.frame.width {
+            x = self.view.frame.width - 240
+        }
+        annotationView.frame = CGRect(x: x, y: y - 83, width: 240, height: 80)
+        annotationView.layer.cornerRadius = 5
+        annotationView.alpha = 1
+    }
+    
+    func mapviewTapped() {
+        searchView.searchBar.resignFirstResponder()
+        annotationView.alpha = 0
+        searchView.navigationItem.rightBarButtonItem = searchView.rightButton
+    }
+    
+    func mapviewDragged() {
+        searchView.searchBar.resignFirstResponder()
+        annotationView.alpha = 0
+        searchView.navigationItem.rightBarButtonItem = searchView.rightButton
+    }
+    
+    func viewTapped() {
+        let businessView = storyboard?.instantiateViewController(withIdentifier: "businessView") as! BusinessViewController
+        businessView.business = searchView.businesses[annotationView.id]
+        searchView.navigationController?.show(businessView, sender: viewTapGestureRecognizer)
+    }
+    
     func goToLocation(location: CLLocation) {
         let span = MKCoordinateSpanMake(0.1, 0.1)
         let region = MKCoordinateRegionMake(location.coordinate, span)
@@ -105,6 +195,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             self.lat = location.coordinate.latitude
             self.long = location.coordinate.longitude
         }
+    }
+    
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 
     /*

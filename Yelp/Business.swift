@@ -18,6 +18,7 @@ class Business: NSObject {
     let reviewCount: NSNumber?
     var latitude: Double?
     var longitude: Double?
+    let id: String?
     
     init(dictionary: NSDictionary) {
         name = dictionary["name"] as? String
@@ -85,6 +86,13 @@ class Business: NSObject {
         }
         
         reviewCount = dictionary["review_count"] as? NSNumber
+        
+        if let id = dictionary["id"] as? String {
+            self.id = id
+        }
+        else {
+            self.id = nil
+        }
     }
     
     class func businesses(array: [NSDictionary]) -> [Business] {
