@@ -2,7 +2,7 @@
 
 YelpApp is a Yelp search app using the [Yelp API](http://www.yelp.com/developers/documentation/v2/search_api).
 
-Time spent: **20** hours spent in total
+Time spent: **21** hours spent in total
 
 ## User Stories
 
@@ -23,21 +23,26 @@ The following **additional** features are implemented:
 
 - [X] Flip between views animation
 - [X] Implement annotation to map view
+- [X] Access detail view from map view
+- [X] Access Yelp data from current location
+- [X] Search Yelp API
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
-1. 
-2. 
+1. Tips for AutoLayout
+2. Better ways to layout view
 
 ## Video Walkthrough 
 
 Here's a walkthrough of implemented user stories:
 
+![alt text] (https://github.com/ryujimano/YelpApp/blob/master/YelpDemo.gif)
+
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+One challenge that I encountered when working on this app was using and learning AutoLayout. The flipping animation between views was also a challenge.
 
 ## License
 
