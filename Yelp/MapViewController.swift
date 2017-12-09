@@ -164,19 +164,19 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         annotationView.alpha = 1
     }
     
-    func mapviewTapped() {
+    @objc func mapviewTapped() {
         searchView.searchBar.resignFirstResponder()
         annotationView.alpha = 0
         searchView.navigationItem.rightBarButtonItem = searchView.rightButton
     }
     
-    func mapviewDragged() {
+    @objc func mapviewDragged() {
         searchView.searchBar.resignFirstResponder()
         annotationView.alpha = 0
         searchView.navigationItem.rightBarButtonItem = searchView.rightButton
     }
     
-    func viewTapped() {
+    @objc func viewTapped() {
         let businessView = storyboard?.instantiateViewController(withIdentifier: "businessView") as! BusinessViewController
         businessView.business = searchView.businesses[annotationView.id]
         searchView.navigationController?.show(businessView, sender: viewTapGestureRecognizer)

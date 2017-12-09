@@ -72,7 +72,7 @@ class SearchViewController: UIViewController, UISearchBarDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    func rightBarButtonPressed() {
+    @objc func rightBarButtonPressed() {
         if isList {
             let newViewController = mapViewController
             newViewController?.view.translatesAutoresizingMaskIntoConstraints = true
@@ -115,7 +115,7 @@ class SearchViewController: UIViewController, UISearchBarDelegate {
         self.navigationItem.rightBarButtonItem = searchButton
     }
     
-    func searchButtonClicked() {
+    @objc func searchButtonClicked() {
         MBProgressHUD.showAdded(to: view, animated: true)
         listViewController.offset = 0
         listViewController.term = searchBar.text!
